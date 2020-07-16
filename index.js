@@ -13,25 +13,29 @@ const refs = {
 };
 
 let intervalId = undefined;
+let isActive = false;
 
-function randomIntegerFromInterval(max) {
-  return Math.floor(Math.random() * (max + 1));
-}
+const randomIntegerFromInterval = (min, max) => {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+};
 
 function setRandomColor() {
-  const color = colors[randomIntegerFromInterval(colors.length - 1)];
+  if (isActive) {
+    refs.startBtn.disabled = true;
+  }
+  const color = colors[randomIntegerFromInterval(0, colors.length)];
   document.body.style.backgroundColor = color;
-  console.log(color);
 }
 
 function startColorChange() {
-  intervalId = intervalId
-    ? intervalId
-    : setInterval(() => setRandomColor(), 1000);
+  intervalId = setInterval(() => setRandomColor(), 1000);
+  isActive = true;
 }
 
 function stopColorChange() {
   clearInterval(intervalId);
+  isActive = false;
+  refs.startBtn.disabled = false;
 }
 
 refs.startBtn.addEventListener('click', startColorChange);
